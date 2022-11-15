@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import logo from "../images/logo.svg";
 import { NavLink } from "react-router-dom";
 import {
@@ -13,10 +13,8 @@ import {
   Toolbar,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { useSelector } from "react-redux";
 
 const PublicNavbar = () => {
-  const { favorites } = useSelector((state) => state.bookstore);
   const [anchorElNav, setAnchorElNav] = useState(null);
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
