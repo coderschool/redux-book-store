@@ -65,6 +65,17 @@
       "title": "Gulliver's Travels",
       "year": 1726,
       "id": "19A9778AFB88"
+    },
+    {
+      "author": "Jorge Luis Borges",
+      "country": "Argentina",
+      "imageLink": "images/ficciones.jpg",
+      "language": "Spanish",
+      "link": "https://en.wikipedia.org/wiki/Ficciones\n",
+      "pages": 224,
+      "title": "Ficciones",
+      "year": 1965,
+      "id": "CA9089453811"
     }
   ],
   "books": [
