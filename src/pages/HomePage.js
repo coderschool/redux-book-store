@@ -38,7 +38,6 @@ const HomePage = () => {
 
   useEffect(() => {
     dispatch(fetchData({ pageNum, limit: 20, query }));
-    // console.log("query", query);
   }, [dispatch, pageNum, limit, query]);
 
   const defaultValues = {

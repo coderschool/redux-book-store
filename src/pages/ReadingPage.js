@@ -30,9 +30,6 @@ const ReadingPage = () => {
   const chooseBook = (bookId) => {
     setRemovedBookId(bookId);
   };
-  // const removeBook = (bookId) => {
-  //   setRemovedBookId(bookId);
-  // };
 
   useEffect(() => {
     if (removedBookId) return;
