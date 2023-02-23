@@ -12,42 +12,48 @@ import {
 } from "@mui/material";
 import { ClipLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
+
 import { useDispatch, useSelector } from "react-redux";
-import { getReadingList, removeBook } from "../components/book/bookSlice";
+import {
+  removeBookFromReadingList,
+  fetchReadingList,
+} from "../features/book/bookSlice";
 
 const BACKEND_API = process.env.REACT_APP_BACKEND_API;
 
 const ReadingPage = () => {
   const [removedBookId, setRemovedBookId] = useState("");
-  const readinglist = useSelector((state) => state.book.readinglist);
-  const status = useSelector((state) => state.book.status);
+  const readingList = useSelector((state) => state.book.readingList);
+  const status = useSelector((state) => state.book?.status);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleClickBook = (bookId) => {
     navigate(`/books/${bookId}`);
   };
-  const chooseBook = (bookId) => {
+
+  const removeBook = (bookId) => {
     setRemovedBookId(bookId);
   };
 
   useEffect(() => {
     if (removedBookId) return;
-    dispatch(getReadingList());
+    dispatch(fetchReadingList());
   }, [dispatch, removedBookId]);
 
   useEffect(() => {
     if (!removedBookId) return;
-    dispatch(removeBook(removedBookId));
+    dispatch(removeBookFromReadingList(removedBookId));
     setRemovedBookId("");
   }, [dispatch, removedBookId]);
-  console.log(readinglist);
+
   return (
     <Container>
       <Typography variant="h3" sx={{ textAlign: "center" }} m={3}>
         Book Store
       </Typography>
-      {status ? (
+      {status === "loading" ? (
         <Box sx={{ textAlign: "center", color: "primary.main" }}>
           <ClipLoader color="inherit" size={150} loading={true} />
         </Box>
@@ -58,7 +64,7 @@ const ReadingPage = () => {
           justifyContent="space-around"
           flexWrap={"wrap"}
         >
-          {readinglist?.map((book) => (
+          {readingList?.map((book) => (
             <Card
               key={book.id}
               sx={{
@@ -74,7 +80,7 @@ const ReadingPage = () => {
                   alt={`${book.title}`}
                   onClick={() => handleClickBook(book.id)}
                 />
-                <CardContent component="div">
+                <CardContent>
                   <Typography gutterBottom variant="h5" component="div">
                     {`${book.title}`}
                   </Typography>
@@ -92,7 +98,7 @@ const ReadingPage = () => {
                       minWidth: "1.5rem",
                     }}
                     size="small"
-                    onClick={() => chooseBook(book.id)}
+                    onClick={() => removeBook(book.id)}
                   >
                     &times;
                   </Button>

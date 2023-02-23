@@ -1,20 +1,33 @@
 import React, { useEffect } from "react";
 import { ClipLoader } from "react-spinners";
 import { useParams } from "react-router-dom";
-import { Container, Button, Box, Grid, Stack, Typography } from "@mui/material";
-import { addToReadingList, getBookDetail } from "../components/book/bookSlice";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import {
+  Container,
+  Button,
+  Box,
+  Grid,
+  Stack,
+  Typography,
+  Alert,
+} from "@mui/material";
+
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getBookDetail,
+  addBookToReadingList,
+} from "../features/book/bookSlice";
 
 const BACKEND_API = process.env.REACT_APP_BACKEND_API;
 
 const BookDetailPage = () => {
-  const dispatch = useDispatch();
-  const bookDetail = useSelector((state) => state.book.bookDetail);
-  const status = useSelector((state) => state.book.status);
+  const book = useSelector((state) => state.book.bookDetail);
+  const status = useSelector((state) => state.book?.status);
+  const error = useSelector((state) => state.book?.error);
 
   const params = useParams();
   const bookId = params.id;
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getBookDetail(bookId));
@@ -22,10 +35,14 @@ const BookDetailPage = () => {
 
   return (
     <Container>
-      {status ? (
+      {status === "loading" ? (
         <Box sx={{ textAlign: "center", color: "primary.main" }}>
           <ClipLoader color="#inherit" size={150} loading={true} />
         </Box>
+      ) : status === "failed" && error ? (
+        <Alert sx={{ m: 1 }} severity="error">
+          {error}
+        </Alert>
       ) : (
         <Grid
           container
@@ -35,40 +52,43 @@ const BookDetailPage = () => {
           sx={{ border: "1px solid black" }}
         >
           <Grid item md={4}>
-            {bookDetail && (
+            {book && (
               <img
                 width="100%"
-                src={`${BACKEND_API}/${bookDetail.imageLink}`}
+                src={`${BACKEND_API}/${book.imageLink}`}
                 alt=""
               />
             )}
           </Grid>
           <Grid item md={8}>
-            {bookDetail && (
+            {book ? (
               <Stack>
-                <h2>{bookDetail.title}</h2>
+                <h2>{book.title}</h2>
                 <Typography variant="body1">
-                  <strong>Author:</strong> {bookDetail.author}
+                  <strong>Author:</strong> {book.author}
                 </Typography>
                 <Typography variant="body1">
-                  <strong>Year:</strong> {bookDetail.year}
+                  <strong>Year:</strong> {book.year}
                 </Typography>
                 <Typography variant="body1">
-                  <strong>Country:</strong> {bookDetail.country}
+                  <strong>Country:</strong> {book.country}
                 </Typography>
                 <Typography variant="body1">
-                  <strong>Pages:</strong> {bookDetail.pages}
+                  <strong>Pages:</strong> {book.pages}
                 </Typography>
                 <Typography variant="body1">
-                  <strong>Language:</strong> {bookDetail.language}
+                  <strong>Language:</strong> {book.language}
                 </Typography>
                 <Button
                   variant="outlined"
                   sx={{ width: "fit-content" }}
-                  children={"Add to Reading List"}
-                  onClick={() => dispatch(addToReadingList(bookDetail))}
-                />
+                  onClick={() => dispatch(addBookToReadingList(book))}
+                >
+                  Add to Reading List
+                </Button>
               </Stack>
+            ) : (
+              "No Book Detail Data Found."
             )}
           </Grid>
         </Grid>
